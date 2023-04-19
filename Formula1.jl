@@ -183,3 +183,65 @@ x_trend = range(minimum(xrand[1]), maximum(xrand[1]), length=100)
 y_trend = evalpoly(coeffs, x_trend)
 
 plot(x_trend, y_trend, linewidth=2, linestyle=:dash, label="trendline")
+
+
+
+####### Przykładowe trasy ######
+using Distributions
+using Plots
+
+ograniczenie_d = 10 #promien krótszego łuku
+ograniczenie_g = 20 #promien dluzszego luku
+punktp_sx = 15 #z tego punktu start (x = 15)
+punktp_sy = 0 #z tego punktu start (y =0)
+
+#tworzenie trasy
+f(x) = ograniczenie_g*sin(x)
+g(x) = ograniczenie_g*cos(x)
+h(x) = ograniczenie_d*sin(x)
+j(x) = ograniczenie_d*cos(x)
+tab1 = [g,j]
+tab2 = [f,h]
+
+tab3 = Array{Function}(undef, 0)
+tab4 =Array{Function}(undef, 0)
+
+x3 =[]
+y  =[]
+r  =[]
+al = []
+dl =[]
+k = rand(Uniform(-300,0), 1000) #1000 przypadkowych wartosci z przedzialu;
+#wazne zeby drugie bylo 0, bo wychodza dziwne zakrety
+c = rand(Uniform(-300,300), 1000)
+for t1 in k
+    for t2 in c
+        x2 = t1
+        y3 =x2 + t2
+        r1 = sqrt((x2-punktp_sx)^2 + (y3)^2) #promien danego okregu
+        odl = sqrt((x2)^2+ (y3)^2) #odl miedzy punktem (0,0), a srodkiem danego okregu
+        y0 = y3 + sqrt((r1)^2 + (x2)^2) # punkt przeciecia z osia OY (0, y0)
+        if( abs(r1-ograniczenie_d)>odl && y0<ograniczenie_g) #ograniczenia
+            al1 = acos(sqrt(7.5^2+(y0/2)^2)/r1) #kąt tworzony przez punkty: (0,y0), sr danego okregu i (15,0) 
+            dl1 = al1*r1  #dlugosc luku okregu miedzy (0,y0) i (15,0) 
+            push!(y, y3)
+            push!(x3, x2)
+            push!(r, r1)
+            push!(al, al1)
+            push!(dl, dl1)
+        end
+    end
+end
+
+for s in 1:length(r)
+    z(x) = r[s]*sin(x) + y[s]
+    w(x) = r[s]*cos(x) + x3[s]
+    push!(tab3, w)
+    push!(tab4, z)
+end
+
+print(argmin(dl), "\n") #numer argumentu o najkrotszym luku
+print(dl[argmin(dl)]) #dlugosc najkrotszego luku
+plot(tab3,tab4,-pi,pi, aspectratio=1, linewidth=1, xlim = (0, ograniczenie_g),
+ylim = (0, ograniczenie_g), legend = false)
+plot!(tab1,tab2,0,pi/2, aspectratio=1, linewidth=5, thickness_scaling = 1, c=:black )
