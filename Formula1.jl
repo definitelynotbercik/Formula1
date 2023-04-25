@@ -221,9 +221,10 @@ for t1 in k
         r1 = sqrt((x2-punktp_sx)^2 + (y3)^2) #promien danego okregu
         odl = sqrt((x2)^2+ (y3)^2) #odl miedzy punktem (0,0), a srodkiem danego okregu
         y0 = y3 + sqrt((r1)^2 + (x2)^2) # punkt przeciecia z osia OY (0, y0)
+        dluod = sqrt(15^2+y0^2) #odl miedzy punktem (15,0) a (0,y0)
         if( abs(r1-ograniczenie_d)>odl && y0<ograniczenie_g) #ograniczenia
-            al1 = acos(sqrt(7.5^2+(y0/2)^2)/r1) #kąt tworzony przez punkty: (0,y0), sr danego okregu i (15,0) 
-            dl1 = al1*r1  #dlugosc luku okregu miedzy (0,y0) i (15,0) 
+            al1 = acos(1-((dluod^2)/(2*r1^2))) #kąt tworzony przez punkty: (0,y0), sr danego okregu i (15,0) 
+            dl1 = al1*r1  #dlugosc luku okregu miedzy (0,y0) i (15,0)
             push!(y, y3)
             push!(x3, x2)
             push!(r, r1)
