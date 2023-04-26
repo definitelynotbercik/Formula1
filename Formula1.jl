@@ -246,3 +246,32 @@ print(dl[argmin(dl)]) #dlugosc najkrotszego luku
 plot(tab3,tab4,-pi,pi, aspectratio=1, linewidth=1, xlim = (0, ograniczenie_g),
 ylim = (0, ograniczenie_g), legend = false)
 plot!(tab1,tab2,0,pi/2, aspectratio=1, linewidth=5, thickness_scaling = 1, c=:black )
+
+
+#### WSTEPNA ANIMACJA DLA NAJPROSTSZEJ TRASY ####
+using Plots
+
+@userplot CirclePlot
+@recipe function f(cp::CirclePlot)
+    x, y, i = cp.args
+    n = length(x)
+    inds = circshift(1:n, 1 - i)
+    linewidth --> range(0, 10, length = n)
+    seriesalpha --> range(0, 1, length = n)
+    aspect_ratio --> 1
+    label --> false
+    x[inds], y[inds]
+end
+
+n = 150
+t = range(0, 2π, length = n)
+x = 15*sin.(-t)
+y = 15*cos.(-t)
+
+anim = @animate for i ∈ 1:n
+    circleplot!(x, y, i,xlim=(0,1), ylim=(0, 1))
+end
+@gif for i ∈ 1:n
+    circleplot(x, y, i, line_z = 1:n, cbar = false, framestyle = :zerolines, xlim=(0,20), ylim=(0, 20))
+    plot!([10*cos.(-t), 20*cos.(-t)], [10*sin.(-t), 20*sin.(-t)], )
+end every 5
